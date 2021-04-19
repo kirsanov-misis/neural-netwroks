@@ -1,0 +1,36 @@
+\documentclass[a4paper,12pt]{article}
+
+\input{preambule.tex}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+\begin{document}
+\large
+\include{title}
+\tableofcontents
+\newpage
+\section{Введение}
+В рамках первой лабораторной работы были применены линейный классификатор и однослойный перцептрон для многоклассовой классификации.
+
+\section{Особенности реализации}
+Для проведения лабораторной работы использовались:
+\begin{itemize}
+	\item язык программирования \textbf{Python3.8};
+	\item среда разработки \textbf{PyCharm;}
+	\item библиотека визуализации \textbf{matplotlib};
+	\item библиотека машинного обучения \textbf{sklearn};
+	\item библиотека многомерных массивов \textbf{numpy};
+	\item библиотека работы с массивами данных \textbf{pandas};
+	\item стандартный модуль аннотации типов \textbf{typing};
+	\item стандартный модуль работы с входными аргументами \textbf{argparse}.
+\end{itemize}
+
+В качестве линейного классификатора был выбран класс библиотеки \textbf{sklearn} "--- SGDClassifier, для однослойного перцептрона "--- Perceptron.
+
+Все модули, опирающиейся на случайные значения, зафиксированы seeed'ом 42. Также, для упрощения работы с кодом были написаны классы обёртки \textbf{Dataset} и \textbf{Fitter}. Первый нужен для того, чтобы в функции одним аргументом передавать признаки и ответы и чтобы иметь удобные именованные поля для доступа к ним; второй класс необходим для взаимодействия с первым и унификации кода.
+
+\newpage
+\section{Результаты}
+\input{generated}
+\include{avila}
+\end{document}

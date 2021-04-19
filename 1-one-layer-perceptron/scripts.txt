@@ -1,0 +1,23 @@
+# скрипт для получения результатов как в таблице 1
+python3.8 code/main.py
+
+# скрипт для получения результатов как в таблице 2
+python3.8 code/main.py --penalty_perceptron l2
+
+# скрипт для получения результатов как в таблице 3
+python3.8 code/main.py --early_stopping_perceptron 1
+
+# скрипт для получения результатов как в таблице 4
+python3.8 code/main.py --early_stopping_perceptron 1 --early_stopping_sgd 1
+
+# скрипт для получения результатов как в таблице 5
+python3.8 code/main.py --early_stopping_perceptron 1 --early_stopping_sgd 1 --penalty_sgd None
+
+# скрипт для получения результатов как в таблице 6
+python3.8 code/main.py --enable_generated_dataset 0 --enable_archive_dataset 1
+
+# скрипт для получения результатов как в таблице 7
+python3.8 code/main.py --enable_generated_dataset 0 --enable_archive_dataset 1 --alpha 1 --early_stopping_perceptron 1 --eta0 0.1 --tol 1 --validation_fraction 0.2
+
+# скрипт для получения результатов как в таблице 8
+python3.8 code/main.py --enable_generated_dataset 0 --enable_archive_squeezed_dataset 1

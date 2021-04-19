@@ -1,0 +1,81 @@
+\subsection{Авила датасет}
+Набор данных был получен из 800 изображений Библии Авилы, сделанная в 12 веке копия Библии на латыни. Цель набора "--- подготовить модель для определения букв по шаблону, чтобы помогать переписывающему. Классами в наборе данных являются 11 букв: A, B, C, D, E, F, G, H, I, W, X, Y.
+
+Характеристика датасета:
+\begin{itemize}
+	\item количество примеров "--- 20867;
+	\item количество атрибутов "--- 10 (расстояние между колонками, верхний отступ, нижний отступ, использование, номер строки, модульное соотношение, интерлиньяж, вес, максимальное число, частное модульного соотношения и интерлиньяжа);
+	\item проведена z-нормальзиация;
+	\item пропущенных значений нет;
+	\item несбалансирован;
+	\item количество классов "--- 11.
+\end{itemize}
+
+Перед тем, как передавать датасет на обучение моделям, было проведено кодирование ответов: отсортированному множеству букв было присвоено число из натурального множества с нулём (A "--- 0, B "--- 1, \dots, Y "--- 11).
+
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& \textbf{accuracy} & \textbf{precision} & \textbf{recall} & \textbf{f1} \\\hline
+		Perceptron       & 0.4496 & 0.2965 & 0.1992 & 0.2123 \\\hline
+		SGDClassifier    & 0.5462 & 0.3718 & 0.3728 & 0.3480 \\\hline
+	\end{tabular}
+	\caption{<<Чистый>> запуск без параметров.}
+\end{table}
+
+\noindent\fbox{%
+	\parbox{\textwidth}{%
+		\centering
+	python3.8 code/main.py -{}-enable\_generated\_dataset 0 -{}-enable\_archive\_dataset 1}%
+}
+\newline
+
+Воспользовавшись \textbf{GridSearchCV}, были получены параметры, при которых перцептрон прибавляет в каждой метрике:
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& \textbf{accuracy} & \textbf{precision} & \textbf{recall} & \textbf{f1} \\\hline
+		Perceptron       & 0.4870 & 0.3095 & 0.2626 & 0.2678 \\\hline
+		SGDClassifier    & 0.5462 & 0.3718 & 0.3728 & 0.3480 \\\hline
+	\end{tabular}
+	\caption{Запуск перцептрона с параметрами, подобранными \textbf{GridSearchCV}.}
+\end{table}
+
+\noindent\fbox{%
+	\parbox{\textwidth}{%
+		\centering
+	python3.8 code/main.py -{}-enable\_generated\_dataset 0 -{}-enable\_archive\_dataset 1 -{}-alpha 1 -{}-early\_stopping\_perceptron 1 -{}-eta0 0.1 -{}-tol 1 -{}-validation\_fraction 0.2}%
+}\\
+
+Попробуем зайти с другой стороны и изменим датасет. Оставим только те классы, количество примеров которых превышает тысячу: A(8572), E(2190), F(3923), H(1039), I(1663), X(1044). 
+
+Получаем следующие метрики качества обучения (таблица \ref{tbl:squeezed_dataset}):
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& \textbf{accuracy} & \textbf{precision} & \textbf{recall} & \textbf{f1} \\\hline
+		Perceptron       & 0.5401 & 0.5062 & 0.4778 & 0.4859 \\\hline
+		SGDClassifier    & 0.6036 & 0.5821 & 0.4828 & 0.4986 \\\hline
+	\end{tabular}
+	\caption{Метрики с урезанным набором данных.}
+	\label{tbl:squeezed_dataset}
+\end{table}
+
+Результат был достигнут следующим скриптом:
+
+\noindent\fbox{%
+	\parbox{\textwidth}{%
+		\centering
+	python3.8 code/main.py -{}-enable\_generated\_dataset 0 -{}-enable\_archive\_squeezed\_dataset 1}%
+}\\
+
+Наблюдаем, что каждая метрика улучшилась на несколько процентов. Урезанный набор данных более сбалансирован, чем исходный. Дальнейшее увеличение значений метрик осложнено двумя факторами:
+\begin{itemize}
+	\item невозможность закодировать ответы методом \textit{one hot encoding} "--- реализация \textbf{sklearn} не позволяет моделям принимать эталонные ответы в виде векторов с размерностью не равной 1;
+	\item линейность моделей "--- линейная неразделимость классов не позволяет добиться точных моделей только с линейными <<разграничителями>> классов (гиперплоскость).
+\end{itemize}
